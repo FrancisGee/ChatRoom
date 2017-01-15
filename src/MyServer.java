@@ -48,7 +48,7 @@ public class MyServer {
 	public static void main(String[] args) throws IOException{
 		MyServer server = new MyServer();
 		server.init();
-		System.out.println("你好");
+		
 		System.out.println("大型测试");
 
 	}
@@ -65,14 +65,65 @@ class ServerThread implements Runnable{
 	
 	@Override
 	public void run(){
+		try {
+			PrintWriter init = new PrintWriter(s.getOutputStream());
+			init.println("Please login");
+			init.flush();
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		String msg =null;
+		msg = readClientContext();
+	if(msg.equals("login")){
+			try {
+				PrintWriter pw = new PrintWriter(s.getOutputStream());
+				pw.println("欢迎合法用户");
+				pw.flush();
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	else if(msg.equals("quit")){
+		System.out.println("有人要退出");
+	}
+	else{
+		try {
+			PrintWriter pw = new PrintWriter(s.getOutputStream());
+			pw.println("Invalid command");
+			pw.flush();
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+		
 		String line = null;
 		while((line = readClientContext()) != null){
+			/*if(line.equals("login")){
+				try {
+					PrintWriter pw = new PrintWriter(s.getOutputStream());
+					pw.println("欢迎合法用户");
+					pw.flush();
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}*/
 			//将客户端数据广播出去(传递给每个客户端数据)
 			for(Socket s : MyServer.socketList){
 				try{
 					PrintWriter pw = new PrintWriter(s.getOutputStream());
 					pw.println(line + "我收到你的消息");
 					pw.flush();
+					
 				}catch (IOException e){
 					e.printStackTrace();
 				}

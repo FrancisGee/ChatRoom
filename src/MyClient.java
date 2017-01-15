@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 /**
  * 
@@ -32,7 +31,18 @@ public class MyClient  extends Socket{
 			 new Thread(new ClientThread(s)).start();
 			// 控制台向服务器发送数据
 			 br = new BufferedReader(new InputStreamReader(System.in));
+	//		 String msg = br.readLine();
+			 
+			 //如果用户输入quit则断开连接
+			 /*if(msg.equals("quit")){
+				 ps = new PrintStream(s.getOutputStream());
+				 ps.println(msg);
+				 ps.flush();
+				 s.close();
+			 }*/
+		
 			 ps = new PrintStream(s.getOutputStream());
+			 
 			 String line = null;
 			 while ((line = br.readLine()) != null){
 				 ps.println(line);
@@ -56,10 +66,11 @@ public class MyClient  extends Socket{
 	 
 	
 	public static void main(String[] args) {
-		MyClient client = new MyClient();
-		client.init();
-		System.out.println("你好");
-		System.out.println("大型测试");
+		MyClient client1 = new MyClient();
+		client1.init();
+		
+		
+		System.out.println("你已经断开连接");
 	}
 
 }
