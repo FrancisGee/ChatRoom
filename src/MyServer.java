@@ -97,9 +97,9 @@ class ServerThread implements Runnable{
 				pw.flush();
 				
 				
-				
+				//广播消息(给其他用户)
 				for(Socket s : MyServer.socketList){
-					if(name != this.name){
+					if(s != this.s){
 					try{
 						PrintWriter pw1 = new PrintWriter(s.getOutputStream());
 						pw1.println( name+" has logined ");
