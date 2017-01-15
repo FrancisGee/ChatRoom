@@ -90,6 +90,17 @@ class ServerThread implements Runnable{
 		}
 	else if(msg.equals("quit")){
 		System.out.println("有人要退出");
+		for(Socket s : MyServer.socketList){
+			try{
+				PrintWriter pw = new PrintWriter(s.getOutputStream());
+				pw.println("兄弟们，有人下线了");
+				pw.flush();
+				
+			}catch (IOException e){
+				e.printStackTrace();
+			}
+		}
+		
 	}
 	else{
 		try {
