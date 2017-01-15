@@ -26,6 +26,7 @@ public class MyServer {
 	public static final int PORT = 8080;
 	public static List<Socket> socketList = Collections
 				.synchronizedList(new ArrayList<Socket>());		//定义一个线程安全的list
+	public  static List<String> user_list = new ArrayList<String>(); 			//登录用户集合
 	
 	//初始化
 	public void init(){
@@ -77,18 +78,34 @@ class ServerThread implements Runnable{
 		
 		String msg =null;
 		msg = readClientContext();
-	if(msg.equals("login")){
+		String[] spilted = msg.split(" ");
+		String command = spilted[0];
+		String  name = spilted[1];
+	
+		
+	if(command.equals("/login")){
 			try {
 				PrintWriter pw = new PrintWriter(s.getOutputStream());
-				pw.println("欢迎合法用户");
+				pw.println("you have logined");
 				pw.flush();
+				for(Socket s : MyServer.socketList){
+					try{
+						PrintWriter pw1 = new PrintWriter(s.getOutputStream());
+						pw1.println( name+" has logined ");
+						pw1.flush();
+						
+					}catch (IOException e){
+						e.printStackTrace();
+					}
+				}
+				
 				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-	else if(msg.equals("quit")){
+	else if(command.equals("quit")){
 		System.out.println("有人要退出");
 		for(Socket s : MyServer.socketList){
 			try{
