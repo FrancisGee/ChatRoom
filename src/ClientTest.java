@@ -60,7 +60,7 @@ public class ClientTest extends Socket {
 	 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		MyClient client1 = new MyClient();
+		ClientTest client1 = new ClientTest();
 		client1.init();
 		
 		
