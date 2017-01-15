@@ -58,6 +58,7 @@ public class MyClient  extends Socket{
 	public static void main(String[] args) {
 		MyClient client = new MyClient();
 		client.init();
+		System.out.println("你好");
 	}
 
 }
