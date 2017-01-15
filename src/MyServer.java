@@ -49,6 +49,7 @@ public class MyServer {
 		MyServer server = new MyServer();
 		server.init();
 		System.out.println("你好");
+		System.out.println("大型测试");
 
 	}
 }
