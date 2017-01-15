@@ -8,6 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class MyServer {
 	public static List<Socket> socketList = Collections
 				.synchronizedList(new ArrayList<Socket>());		//定义一个线程安全的list
 	public  static List<String> user_list = new ArrayList<String>(); 			//登录用户集合
+	public static HashMap<String,Socket> map = new HashMap<String,Socket>();
 	
 	//初始化
 	public void init(){
@@ -58,6 +60,7 @@ public class MyServer {
 class ServerThread implements Runnable{
 	private BufferedReader br;
 	private Socket s;
+	private String name;
 	
 	ServerThread(Socket s) throws IOException{
 		this.s = s;
@@ -81,6 +84,10 @@ class ServerThread implements Runnable{
 		String[] spilted = msg.split(" ");
 		String command = spilted[0];
 		String  name = spilted[1];
+		
+		//将新用户加入用户列表
+		MyServer.user_list.add(name);
+		MyServer.map.put(name, s);
 	
 		
 	if(command.equals("/login")){
@@ -88,7 +95,11 @@ class ServerThread implements Runnable{
 				PrintWriter pw = new PrintWriter(s.getOutputStream());
 				pw.println("you have logined");
 				pw.flush();
+				
+				
+				
 				for(Socket s : MyServer.socketList){
+					if(name != this.name){
 					try{
 						PrintWriter pw1 = new PrintWriter(s.getOutputStream());
 						pw1.println( name+" has logined ");
@@ -97,6 +108,7 @@ class ServerThread implements Runnable{
 					}catch (IOException e){
 						e.printStackTrace();
 					}
+				}
 				}
 				
 				
