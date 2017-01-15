@@ -48,6 +48,7 @@ public class MyServer {
 	public static void main(String[] args) throws IOException{
 		MyServer server = new MyServer();
 		server.init();
+		System.out.println("你好");
 
 	}
 }
