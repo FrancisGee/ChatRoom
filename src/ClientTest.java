@@ -25,15 +25,15 @@ public class ClientTest extends Socket {
 			 new Thread(new ClientThread(s)).start();
 			// 控制台向服务器发送数据
 			 br = new BufferedReader(new InputStreamReader(System.in));
-			 String msg = br.readLine();
+	//		 String msg = br.readLine();
 			 
 			 //如果用户输入quit则断开连接
-			 if(msg.equals("quit")){
+			/* if(msg.equals("quit")){
 				 ps = new PrintStream(s.getOutputStream());
 				 ps.println(msg);
 				 ps.flush();
 				 s.close();
-			 }
+			 }*/
 		
 			 ps = new PrintStream(s.getOutputStream());
 			 

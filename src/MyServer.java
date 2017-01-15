@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class MyServer {
 	public static final int PORT = 8080;
 	public static List<Socket> socketList = Collections
 				.synchronizedList(new ArrayList<Socket>());		//定义一个线程安全的list
-	public  static List<String> user_list = new ArrayList<String>(); 			//登录用户集合
+	public  static HashSet<String> user_list = new HashSet<String>(); 			//登录用户集合
 	public static HashMap<String,Socket> map = new HashMap<String,Socket>();
 	
 	//初始化
@@ -85,12 +86,17 @@ class ServerThread implements Runnable{
 		String command = spilted[0];
 		String  name = spilted[1];
 		
-		//将新用户加入用户列表
-		MyServer.user_list.add(name);
+		
 		MyServer.map.put(name, s);
+		
+
 	
 		
 	if(command.equals("/login")){
+		if(!MyServer.user_list.contains(name)){
+			
+			MyServer.user_list.add(name);
+			
 			try {
 				PrintWriter pw = new PrintWriter(s.getOutputStream());
 				pw.println("you have logined");
@@ -115,7 +121,20 @@ class ServerThread implements Runnable{
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				}
 			}
+		else{
+			try {
+				System.out.println("非法用户想要进来");
+				PrintWriter pw = new PrintWriter(s.getOutputStream());
+				pw.println("Name exist, please choose anthoer name....");
+				pw.flush();
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		}
 	else if(command.equals("quit")){
 		System.out.println("有人要退出");
