@@ -164,17 +164,47 @@ class ServerThread implements Runnable{
 			//服务器记录日志信息
 			System.out.println(line);
 			MessageHelper.Message talk = MessageHelper.parseRawMessage(line);
+			int flag = talk.getFlag();
 			
-			//向某个用户私聊(测试通过)
+			if(flag == 1){
+			//向某个用户私聊
 			Socket target = MyServer.map.get(talk.getTo());
 			
-			try {
-				PrintWriter pw３= new PrintWriter(target.getOutputStream());
-				pw３.println(talk.getBody());
-				pw３.flush();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				try {
+					PrintWriter pw３= new PrintWriter(target.getOutputStream());
+					pw３.println(talk.getBody());
+					pw３.flush();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			if(flag == 2){
+				//代表这是一条广播消息
+				//广播消息(给其他用户)
+				for(Socket s : MyServer.socketList){
+					if(s != this.s){
+					try{
+						PrintWriter pw1 = new PrintWriter(s.getOutputStream());
+						pw1.println(name + "说"+": "+talk.getBody());
+						pw1.flush();
+						
+					}catch (IOException e){
+						e.printStackTrace();
+					}
+				}
+				}
+				
+				//自己看到的消息
+				try {
+					PrintWriter pw6 = new PrintWriter(s.getOutputStream());
+					pw6.println("你说: "+ talk.getBody());
+					pw6.flush();
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			
 			
