@@ -51,6 +51,56 @@ public class MessageHelper {
 				
 		
 			}
+			if(raw.startsWith("//hi")){
+				String[] msg = null;
+				msg = raw.split(" ");
+				if(msg.length == 1){
+					String body = "Hi, 大家好 ! 我来咯~";
+					String to = null;
+					int flag = 3;
+					return new Message(to,body,flag);
+				}
+				if(msg.length ==  2){
+					String to = msg[1];
+					String body = "Hi，你好啊~";
+					int flag = 4;
+					return new Message(to,body,flag);
+					
+				}
+			}
+			if(raw.equals("/who")){
+				String to = null;
+				String body = raw;
+				int flag = 5;
+				return new Message(to,body,flag);
+			}
+			if(raw.startsWith("/history")){
+				String[] msg = null;
+				msg = raw.split(" ");
+				if(msg.length == 1){
+					String to = null;
+					String body = raw;
+					int flag = 6;
+					return new Message(to,body,flag);
+				}
+				if(msg.length == 3){
+					String to = null;
+					String body = " ";
+					for(int i = 1; i < msg.length; i++){
+						body += " "+ msg[i];	
+					}
+					int flag = 7;
+					return new Message(to,body,flag);
+					}
+				}
+			if(raw.equals("/quit")){
+				String to = null;
+				String body = null;
+				int flag = 8;
+				return new Message(to,body,flag);
+			}
+			
+			
 			else{
 				String body = raw;
 				String to = null;
@@ -62,7 +112,7 @@ public class MessageHelper {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		MessageHelper  test = new MessageHelper();
-		String str= new String("今天请谁吃饭来着");
+		String str= new String("/quit");
 		Message msg = test.parseRawMessage(str);
 		System.out.println(msg.body);
 		System.out.println(msg.flag);
