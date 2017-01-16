@@ -5,11 +5,13 @@ public class MessageHelper {
 		//	private final String from;
 			private final String to;
 			private final String body;
+			private final int flag;			//用于区分不同的命令				
 			
-			public Message( String to, String body){
+			public Message( String to, String body, int flag){
 	//			this.from = from;
 				this.to = to;
 				this.body = body;
+				this.flag = flag;
 			}
 			
 		/*	public String getFrom(){
@@ -24,6 +26,10 @@ public class MessageHelper {
 				return this.body;
 			}
 			
+			public int getFlag(){
+				return this.flag;
+			}
+			
 		}
 		
 		//Raw message format: From user1 to user2 : message body
@@ -36,31 +42,32 @@ public class MessageHelper {
 				for(int i = 2; i < msg.length; i++){
 					body += " "+ msg[i];
 				}
-				return  new Message(to,body);
+				
+				int  flag = 1;													//flag为１代表/to命令
+				
+				
+				return  new Message(to,body,flag);
 				
 				
 		
 			}
-				return null;
-			
-			
+			else{
+				String body = raw;
+				String to = null;
+				int flag = 2;													//flag为２代表广播消息
+				return new Message(to,body,flag);
+			}
+				
 		}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		MessageHelper  test = new MessageHelper();
-		String str= new String("/to Tom how are you ");
-		if(str.startsWith("/to")){
-			String[] msg = null;
-			msg = str.split(" ");
-			String toname = msg[1];
-			String body = " ";
-			for(int i = 2; i < msg.length; i++){
-				body += " "+ msg[i];
-			}
-			
-			System.out.println(toname);
-			System.out.println(body);
-		}
+		String str= new String("今天请谁吃饭来着");
+		Message msg = test.parseRawMessage(str);
+		System.out.println(msg.body);
+		System.out.println(msg.flag);
+		
+		
 	}
 
 }
