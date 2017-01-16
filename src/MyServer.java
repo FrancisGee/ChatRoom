@@ -62,23 +62,18 @@ class ServerThread implements Runnable{
 	private BufferedReader br;
 	private Socket s;
 	private String name;
+	private PrintWriter writer;
+	private int isClosed = 0;
 	
 	ServerThread(Socket s) throws IOException{
 		this.s = s;
 		br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+		sendHello(s);
 	}
 	
 	@Override
 	public void run(){
-		try {
-			PrintWriter init = new PrintWriter(s.getOutputStream());
-			init.println("Please login");
-			init.flush();
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 		
 		String msg =null;
 		msg = readClientContext();
@@ -203,6 +198,19 @@ class ServerThread implements Runnable{
 
 	}
 		
+	
+	//给客户端发送欢迎登录消息
+	private void sendHello(Socket selfsocket) {
+		try {
+			writer = new PrintWriter(s.getOutputStream());
+			writer.println("Please login....");
+			writer.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	}
 
 
