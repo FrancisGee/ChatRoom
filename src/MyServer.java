@@ -163,7 +163,8 @@ class ServerThread implements Runnable{
 			}
 			else{
 			
-			//对方看到的消息
+			//对方看到的消息(这个地方没有用PrintWriter来确定对象)
+			//因为我还没有维护用户名字对于的PrintWriter的HashMap
 				try {
 					PrintWriter pw３= new PrintWriter(target.getOutputStream());
 					pw３.println(name+ " 对你说 "+ talk.getBody());
