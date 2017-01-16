@@ -30,6 +30,8 @@ public class MyServer {
 				.synchronizedList(new ArrayList<Socket>());		//定义一个线程安全的list
 	public  static HashSet<String> user_list = new HashSet<String>(); 			//登录用户集合
 	public static HashMap<String,Socket> map = new HashMap<String,Socket>();
+	//用于对广播等操作进行重构
+	public static HashSet<PrintWriter> writers = new HashSet<PrintWriter>();
 	
 	//初始化
 	public void init(){
@@ -69,6 +71,7 @@ class ServerThread implements Runnable{
 		this.s = s;
 		br = new BufferedReader(new InputStreamReader(s.getInputStream()));
 		sendHello(s);
+		writer = new PrintWriter(s.getOutputStream());
 	}
 	
 	@Override
@@ -83,6 +86,7 @@ class ServerThread implements Runnable{
 		
 		
 		MyServer.map.put(name, s);
+		MyServer.writers.add(writer);
 		
 
 	
@@ -92,43 +96,23 @@ class ServerThread implements Runnable{
 			
 			MyServer.user_list.add(name);
 			
-			try {
-				PrintWriter pw = new PrintWriter(s.getOutputStream());
-				pw.println("you have logined");
-				pw.flush();
-				
-				
-				//广播消息(给其他用户)
-				for(Socket s : MyServer.socketList){
-					if(s != this.s){
-					try{
-						PrintWriter pw1 = new PrintWriter(s.getOutputStream());
-						pw1.println( name+" has logined ");
-						pw1.flush();
-						
-					}catch (IOException e){
-						e.printStackTrace();
+			writer.println("you have logined");
+			writer.flush();
+			
+			
+			//广播消息(给其他用户)
+			for(PrintWriter out  : MyServer.writers){
+				if(out != this.writer){
+				    out.println( name+" has logined ");
+					out.flush();
 					}
-				}
-				}
-				
-				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 				}
 			}
 		else{
-			try {
-				System.out.println("非法用户想要进来");
-				PrintWriter pw = new PrintWriter(s.getOutputStream());
-				pw.println("Name exist, please choose anthoer name....");
-				pw.flush();
-				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			System.out.println("非法用户想要进来");
+			
+			writer.println("Name exist, please choose anthoer name....");
+			writer.flush();
 		}
 		}
 	else if(command.equals("/quit")){
@@ -146,15 +130,8 @@ class ServerThread implements Runnable{
 		
 	}
 	else{
-		try {
-			PrintWriter pw = new PrintWriter(s.getOutputStream());
-			pw.println("Invalid command");
-			pw.flush();
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		writer.println("Invalid command");
+		writer.flush();
 	}
 	
 	//处理后续消息
@@ -173,28 +150,16 @@ class ServerThread implements Runnable{
 			//判断私聊对象名字的合法性
 				//如果该用户不存在
 				if(!MyServer.map.containsKey(talk.getTo())){
-					try {
-						PrintWriter pw6= new PrintWriter(s.getOutputStream());
-						pw6.println(talk.getTo() + " is not online ");
-						pw6.flush();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					writer.println(talk.getTo() + " is not online ");
+					writer.flush();
 				}
 				
 			else{
 			//拿到这个用户的Socket
 			Socket target = MyServer.map.get(talk.getTo());
 			if(target.equals(s)){
-				try {
-					PrintWriter pw5= new PrintWriter(s.getOutputStream());
-					pw5.println("Stop talking to yourself");
-					pw5.flush();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				writer.println("Stop talking to yourself");
+				writer.flush();
 			}
 			else{
 			
@@ -208,61 +173,24 @@ class ServerThread implements Runnable{
 					e1.printStackTrace();
 				}
 				
-				//自己看到的消息
-					try {
-						PrintWriter pw8= new PrintWriter(s.getOutputStream());
-						pw8.println(" 你对 "+ talk.getTo()+ " 说 "+ talk.getBody());
-						pw8.flush();
-						} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-							}
+					writer.println(" 你对 "+ talk.getTo()+ " 说 "+ talk.getBody());
+					writer.flush();
 					}
 				}
 			}
 			if(flag == 2){
 				//代表这是一条广播消息
 				//广播消息(给其他用户)
-				for(Socket s : MyServer.socketList){
-					if(s != this.s){
-					try{
-						PrintWriter pw1 = new PrintWriter(s.getOutputStream());
-						pw1.println(name + "说"+": "+talk.getBody());
-						pw1.flush();
-						
-					}catch (IOException e){
-						e.printStackTrace();
+				for(PrintWriter out : MyServer.writers){
+					if(out != this.writer){
+					out.println(name + "说"+": "+talk.getBody());
+					out.flush();
 					}
 				}
-				}
 				
-				//自己看到的消息
-				try {
-					PrintWriter pw6 = new PrintWriter(s.getOutputStream());
-					pw6.println("你说: "+ talk.getBody());
-					pw6.flush();
-					
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				writer.println("你说: "+ talk.getBody());
+				writer.flush();
 			}
-			
-			
-			
-			
-			//将客户端数据广播出去(传递给每个客户端数据)
-			//广播程序已经调通
-		/*	for(Socket s : MyServer.socketList){
-				try{
-					PrintWriter pw = new PrintWriter(s.getOutputStream());
-					pw.println(name +"说了"+line + "这句话");
-					pw.flush();
-					
-				}catch (IOException e){
-					e.printStackTrace();
-				}
-			}*/
 		}
 		
 			
