@@ -25,7 +25,7 @@ import java.util.List;
 
 
 public class MyServer {
-	public static final int PORT = 8080;
+	private static final int PORT = 8080;
 	public static List<Socket> socketList = Collections
 				.synchronizedList(new ArrayList<Socket>());		//定义一个线程安全的list
 	public  static HashSet<String> user_list = new HashSet<String>(); 			//登录用户集合
