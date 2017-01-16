@@ -168,8 +168,25 @@ class ServerThread implements Runnable{
 			
 			if(flag == 1){
 			//向某个用户私聊
+				
+				
+			//判断私聊对象名字的合法性
+				//如果该用户不存在
+				if(!MyServer.map.containsKey(talk.getTo())){
+					try {
+						PrintWriter pw6= new PrintWriter(s.getOutputStream());
+						pw6.println(talk.getTo() + " is not online ");
+						pw6.flush();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+				else{
 			//拿到这个用户的Socket
 			Socket target = MyServer.map.get(talk.getTo());
+			
 			
 			
 			//对方看到的消息
@@ -190,6 +207,7 @@ class ServerThread implements Runnable{
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				}
 				}
 			}
 			if(flag == 2){
