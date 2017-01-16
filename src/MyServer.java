@@ -183,11 +183,20 @@ class ServerThread implements Runnable{
 					}
 				}
 				
-				else{
+			else{
 			//拿到这个用户的Socket
 			Socket target = MyServer.map.get(talk.getTo());
-			
-			
+			if(target.equals(s)){
+				try {
+					PrintWriter pw5= new PrintWriter(s.getOutputStream());
+					pw5.println("Stop talking to yourself");
+					pw5.flush();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			else{
 			
 			//对方看到的消息
 				try {
@@ -200,14 +209,15 @@ class ServerThread implements Runnable{
 				}
 				
 				//自己看到的消息
-				try {
-					PrintWriter pw8= new PrintWriter(s.getOutputStream());
-					pw8.println(" 你对 "+ talk.getTo()+ " 说 "+ talk.getBody());
-					pw8.flush();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+					try {
+						PrintWriter pw8= new PrintWriter(s.getOutputStream());
+						pw8.println(" 你对 "+ talk.getTo()+ " 说 "+ talk.getBody());
+						pw8.flush();
+						} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+							}
+					}
 				}
 			}
 			if(flag == 2){
