@@ -75,9 +75,9 @@ class ServerThread implements Runnable{
 	public void run(){
 		
 		
-		String msg =null;
-		msg = readClientContext();
-		String[] spilted = msg.split(" ");
+		String firstmsg =null;
+		firstmsg = readClientContext();
+		String[] spilted = firstmsg.split(" ");
 		String command = spilted[0];
 		String  name = spilted[1];
 		
@@ -131,7 +131,7 @@ class ServerThread implements Runnable{
 			}
 		}
 		}
-	else if(command.equals("quit")){
+	else if(command.equals("/quit")){
 		System.out.println("有人要退出");
 		for(Socket s : MyServer.socketList){
 			try{
@@ -157,31 +157,41 @@ class ServerThread implements Runnable{
 		}
 	}
 	
-		
+	//处理后续消息
+	
 		String line = null;
 		while((line = readClientContext()) != null){
-			/*if(line.equals("login")){
-				try {
-					PrintWriter pw = new PrintWriter(s.getOutputStream());
-					pw.println("欢迎合法用户");
-					pw.flush();
-					
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}*/
+			//服务器记录日志信息
+			System.out.println(line);
+			MessageHelper.Message talk = MessageHelper.parseRawMessage(line);
+			
+			//向某个用户私聊(测试通过)
+			Socket target = MyServer.map.get(talk.getTo());
+			
+			try {
+				PrintWriter pw３= new PrintWriter(target.getOutputStream());
+				pw３.println(talk.getBody());
+				pw３.flush();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			
+			
+			
 			//将客户端数据广播出去(传递给每个客户端数据)
-			for(Socket s : MyServer.socketList){
+			//广播程序已经调通
+		/*	for(Socket s : MyServer.socketList){
 				try{
 					PrintWriter pw = new PrintWriter(s.getOutputStream());
-					pw.println(line + "我收到你的消息");
+					pw.println(name +"说了"+line + "这句话");
 					pw.flush();
 					
 				}catch (IOException e){
 					e.printStackTrace();
 				}
-			}
+			}*/
 		}
 		
 			

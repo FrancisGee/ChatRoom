@@ -29,6 +29,8 @@ public class MyClient  extends Socket{
 			 Socket s = new Socket(IP,PORT);
 			// 启动线程读取服务器端发送的数据
 			 new Thread(new ClientThread(s)).start();
+			 System.out.println("请输入登录命令，格式为/login + yourname");
+			 System.out.println("如果您想退出，请输入/quit + yourname ,谢谢！");
 			// 控制台向服务器发送数据
 			 br = new BufferedReader(new InputStreamReader(System.in));
 	//		 String msg = br.readLine();
