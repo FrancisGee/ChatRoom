@@ -168,15 +168,28 @@ class ServerThread implements Runnable{
 			
 			if(flag == 1){
 			//向某个用户私聊
+			//拿到这个用户的Socket
 			Socket target = MyServer.map.get(talk.getTo());
 			
+			
+			//对方看到的消息
 				try {
 					PrintWriter pw３= new PrintWriter(target.getOutputStream());
-					pw３.println(talk.getBody());
+					pw３.println(name+ " 对你说 "+ talk.getBody());
 					pw３.flush();
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
+				}
+				
+				//自己看到的消息
+				try {
+					PrintWriter pw8= new PrintWriter(s.getOutputStream());
+					pw8.println(" 你对 "+ talk.getTo()+ " 说 "+ talk.getBody());
+					pw8.flush();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 			if(flag == 2){
