@@ -61,6 +61,7 @@ public class MyServer {
 }
 
 class ServerThread implements Runnable{
+	private static final int BROARDCAST = 2;
 	private BufferedReader br;
 	private Socket s;
 	private String name;
@@ -179,7 +180,7 @@ class ServerThread implements Runnable{
 					}
 				}
 			}
-			if(flag == 2){
+			if(flag == BROARDCAST){
 				//代表这是一条广播消息
 				//广播消息(给其他用户)
 				for(PrintWriter out : MyServer.writers){
