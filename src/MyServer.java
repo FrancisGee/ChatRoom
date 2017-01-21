@@ -196,6 +196,40 @@ class ServerThread implements Runnable {
 				}
 				
 			}
+			if(flag == COMMAND_HI_USER){
+				//打招呼(带用户参数)
+				
+				//自己看到的消息
+				writer.println(" 你向 "+ talk.getTo() + "打招呼"+ talk.getBody());
+				writer.flush();
+				
+				//对方看到的消息
+				Socket target = MyServer.map.get(talk.getTo());
+				try {
+					PrintWriter out = new PrintWriter(target.getOutputStream());
+					out.println(name + "向你打招呼"+ talk.getBody());
+					out.flush();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				//其他人看到的消息
+				for (Socket s : MyServer.socketList) {
+					if (s != this.s && s != target) {
+						try {
+							PrintWriter out = new PrintWriter(s.getOutputStream());
+							out.println(name + " 向 "+ talk.getTo() + " 打招呼 "+ talk.getBody() );
+							out.flush();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+				
+			}
+			
 		}
 
 	}
