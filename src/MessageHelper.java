@@ -55,13 +55,13 @@ public class MessageHelper {
 			if (msg.length == 1) {
 				String body = "Hi, 大家好 ! 我来咯~";
 				String to = null;
-				int flag = 3;
+				int flag = 3;										//flag为３代表//hi命令不携带用户参数
 				return new Message(to, body, flag);
 			}
 			if (msg.length == 2) {
 				String to = msg[1];
 				String body = "Hi，你好啊~";
-				int flag = 4;
+				int flag = 4;										//flag为４代表hi命令携带用户参数
 				return new Message(to, body, flag);
 
 			}

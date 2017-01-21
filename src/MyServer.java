@@ -56,7 +56,10 @@ public class MyServer {
 }
 
 class ServerThread implements Runnable {
+	private static final int COMMAND_TO = 1;
 	private static final int BROARDCAST = 2;
+	private static final int COMMAND_HI = 3;
+	private static final int COMMAND_HI_USER = 4;
 	private BufferedReader br;
 	private Socket s;
 	private String name;
@@ -130,7 +133,7 @@ class ServerThread implements Runnable {
 			MessageHelper.Message talk = MessageHelper.parseRawMessage(line);
 			int flag = talk.getFlag();
 
-			if (flag == 1) {
+			if (flag == COMMAND_TO) {
 				// 向某个用户私聊
 
 				// 判断私聊对象名字的合法性
@@ -176,6 +179,22 @@ class ServerThread implements Runnable {
 
 				writer.println("你说: " + talk.getBody());
 				writer.flush();
+			}
+			if(flag == COMMAND_HI){
+				//打招呼(无用户参数)
+				
+				//自己看到的消息
+				writer.println(" 你向大家打招呼 "+ talk.getBody());
+				writer.flush();
+				
+				//别人看到的消息
+				for (PrintWriter out : MyServer.writers) {
+					if (out != this.writer) {
+						out.println(name + " 向大家打招呼 , " + ": " + talk.getBody());
+						out.flush();
+					}
+				}
+				
 			}
 		}
 
