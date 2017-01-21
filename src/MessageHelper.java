@@ -69,7 +69,7 @@ public class MessageHelper {
 		if (raw.equals("/who")) {
 			String to = null;
 			String body = raw;
-			int flag = 5;
+			int flag = 5;											//flag为５代表执行/who命令查询当前系统用户数
 			return new Message(to, body, flag);
 		}
 		if (raw.startsWith("/history")) {

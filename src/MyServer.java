@@ -60,6 +60,7 @@ class ServerThread implements Runnable {
 	private static final int BROARDCAST = 2;
 	private static final int COMMAND_HI = 3;
 	private static final int COMMAND_HI_USER = 4;
+	private static final int COMMAND_WHO = 5;
 	private BufferedReader br;
 	private Socket s;
 	private String name;
@@ -229,6 +230,17 @@ class ServerThread implements Runnable {
 				}
 				
 			}
+			if(flag == COMMAND_WHO){
+				System.out.println(MyServer.user_list.size());
+				
+				for(String user: MyServer.user_list){
+					writer.println(user + " is online ");
+					
+				}
+				writer.println(" Total online user: " + MyServer.user_list.size());
+				writer.flush();
+			}
+			
 			
 		}
 
